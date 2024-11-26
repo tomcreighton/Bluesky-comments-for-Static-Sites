@@ -1,2 +1,9 @@
 # Bluesky-comments-for-Static-Sites
-JS that fetches replies to a given link from Bluesky and displays them on your site.
+
+Invoke on any given page like so:
+
+document.addEventListener('DOMContentLoaded', () => {
+  loadBlueskyComments();
+});
+
+See https://tomcreighton.com/bluesky-comments for more context.
