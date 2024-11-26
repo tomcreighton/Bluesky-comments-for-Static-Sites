@@ -48,9 +48,9 @@ async function loadBlueskyComments() {
         </a></small>
         <p>${reply.post.record.text}</p>
         <small>
-          🩷 ${reply.post.likeCount || 0}&nbsp;
-          🔁 ${reply.post.repostCount || 0}&nbsp;
           💬 ${reply.post.replyCount || 0}&nbsp;
+          🔁 ${reply.post.repostCount || 0}&nbsp;
+          🩷 ${reply.post.likeCount || 0}&nbsp;
           <a href="https://bsky.app/profile/${reply.post.author.did}/post/${reply.post.uri.split('/').pop()}" target="_blank">
             Link
           </a>
