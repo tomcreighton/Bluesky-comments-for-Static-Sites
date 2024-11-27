@@ -1,8 +1,6 @@
 async function loadBlueskyComments() {
   const currentUrl = window.location.href;
-  const commentsDiv = document.getElementById('bluesky-comments');
-  const commentsList = document.createElement('ul');
-  commentsDiv.appendChild(commentsList);
+  const commentsDiv = document.getElementById("bluesky-comments");
 
   try {
     // Search for posts containing current URL
@@ -12,7 +10,10 @@ async function loadBlueskyComments() {
       { headers: { Accept: "application/json" } }
     );
 
-    if (!searchResponse.ok) throw new Error("Failed to search posts");
+    if (!searchResponse.ok) {
+      throw new Error("Failed to search posts");
+    }
+
     const searchData = await searchResponse.json();
 
     // For each post found, fetch its thread
@@ -32,16 +33,23 @@ async function loadBlueskyComments() {
       }
     }
 
+    if (allComments.length === 0) {
+      return;
+    }
+
+    const commentsList = document.createElement("ul");
+
     // Sort all comments by time
-    const sortedComments = allComments.sort((a, b) =>
-      new Date(a.post.indexedAt) - new Date(b.post.indexedAt)
+    const sortedComments = allComments.sort(
+      (a, b) => new Date(a.post.indexedAt) - new Date(b.post.indexedAt)
     );
 
-    sortedComments.forEach(reply => {
+    // Format each of the comments
+    sortedComments.forEach((reply) => {
       if (!reply?.post?.record?.text) return;
       const author = reply.post.author;
 
-      const li = document.createElement('li');
+      const li = document.createElement("li");
       li.innerHTML = `
         <small><a href="https://bsky.app/profile/${author.did}" target="_blank">
           ${author.displayName || author.handle}
@@ -51,14 +59,18 @@ async function loadBlueskyComments() {
           💬 ${reply.post.replyCount || 0}&nbsp;
           🔁 ${reply.post.repostCount || 0}&nbsp;
           🩷 ${reply.post.likeCount || 0}&nbsp;
-          <a href="https://bsky.app/profile/${reply.post.author.did}/post/${reply.post.uri.split('/').pop()}" target="_blank">
+          <a href="https://bsky.app/profile/${
+            reply.post.author.did
+          }/post/${reply.post.uri.split("/").pop()}" target="_blank">
             Link
           </a>
         </small>
       `;
       commentsList.appendChild(li);
     });
+
+    commentsDiv.appendChild(commentsList);
   } catch (error) {
-    commentsDiv.innerHTML = `<p>Error loading comments: ${error.message}</p>`;
+    throw new Error(error);
   }
 }
